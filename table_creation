@@ -1,0 +1,52 @@
+
+-- command to display databases
+
+show databases;
+
+-- command to create database
+
+Create database flm_bms;
+
+-- login into database
+
+use flm_bms;
+
+-- 1. Creating the flm_users table
+
+CREATE TABLE flm_users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    dob VARCHAR(255) NOT NULL,
+    salt VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    failedcountattempts INT NOT NULL DEFAULT 0,
+    lastlogin_date DATE
+);
+
+-- 2. Creating the flm_accounts table
+
+CREATE TABLE flm_accounts (
+    account_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    account_number VARCHAR(255) NOT NULL,
+    balance DECIMAL(20,2) NOT NULL,
+    is_active BOOLEAN NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES flm_users(user_id)
+);
+
+-- 3. Creating the flm_transactions table
+
+CREATE TABLE flm_transactions (
+    trans_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    account_id INT,
+    amount DECIMAL(20,2) NOT NULL,
+    from_account VARCHAR(255) NOT NULL,
+    to_account VARCHAR(255) NOT NULL,
+    trans_date DATE NOT NULL,
+    trans_type ENUM('db', 'cd') NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES flm_users(user_id),
+    FOREIGN KEY (account_id) REFERENCES flm_accounts(account_id)
+);
